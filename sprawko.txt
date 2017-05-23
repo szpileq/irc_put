@@ -1,0 +1,52 @@
+﻿On 2015-01-25 10:40, Piotr Szpilkowski wrote:
+> Komunikator internetowy typu IRC
+> 
+> Opis problemu:
+> Stworzenie systemu w architekturze serwer-klient, gdzie serwer jest
+> aplikacją Unixową, a klient - systemu Windows. Klient podłącza sie do
+> serwera poprzez socket TCP, po poprawnej autoryzacji ma możliwość
+> wysyłania wiadomości do serwera, który następnie broadcastuje tę
+> wiadomość do wszystkich podłączonych klientów 
+> 
+> Przyjęta metoda rozwiązania problemu:
+> Opis protokołu:
+Protokół opiera się na przesyłaniu wiadomości składającej się z maksymalnie 128 znaków.
+Pierwsza wiadomość od klienta ma format '/nick <nick>', która po odebraniu przez serwer służy do
+zarejestrowania klienta. Następne wiadomości są przesyłane do wszystkich
+zarejestowanych klientów w taki sam sposób jak klienci wysyłają wiadomości do
+serwera.
+
+> Serwer:
+Serwer został napisany w C, jego praca polega na wywoływaniu procesu dla
+każdego podłączonego klienta. Przy rejestracji klienta serwer dodaje wpis do
+tablicy umieszczonej w anonimowym segmencie pamięci współdzielonej.
+
+> Obsługa serwera:
+
+aby skompilować serwer należy wydać komendę "make server" w głownym katalogu
+projektu. Aby urubchomić serwer należy wydać komendę "./server/bin/ircserver
+--port-number <numer-portu>".
+ 
+> Klient: Klient został napisany w języku C++, używając wstawek C, a
+> GUI wykonane zostało we frameworku Qt 5.2. Połączenie do serwera jest
+> realizowane przez:
+> Wpisanie IP
+> Wpisanie portu
+> Wpisanie nicka
+> Dane wejściowe, jeśli przeszły walidację, pozwalają połączyć się z
+> serwerem przyciskiem connect.
+> Po naciśnięciu connect do serwera wysyłana jest wiadomość
+> rejestrująca zawierająca nick, pod którym klient będzie zarejestrowany
+> w systemie.
+> Przesyłanie wiadomości realizowane jest przez użycie pola edycyjnego
+> na samym dole programu i aktywowane przyciskiem Send. Wiadomość ta
+> również podlega walidacji, tj. nie może przekroczyć 127 znaków.
+> Wysyłanie odbywa sie w dwóch turach - najpierw wysyłany jest rozmiar
+> wiadomości a następnie sama wiadomość - w celu oszczędności pakietów.
+> Odbieranie polega na nasłuchiwaniu socketu przydzielonego przez
+> serwer, jezeli jakieś dane pojawią się na nim, zostaną odebrane i
+> wypisane w okienku głównym
+
+Obsługa klienta:
+Klient posiada projekt w QtCreator, który należy otworzyć, skompilować i uruchomić.
+W oknie programu należy wpisać IP serwera, port oraz nick.
